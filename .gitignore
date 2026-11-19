@@ -1,0 +1,60 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Temporary and editor files
+*.tmp
+*.bak
+*.swp
+~$*
+.~lock.*
+.ipynb_checkpoints/
+
+# Secrets (never commit)
+.env
+*.pem
+*.key
+
+# Power BI local caches (the .pbix itself IS meant to be committed)
+*.pbi.cache
+.pbi/
+
+# --- Dynamic platform additions ---
+.env.*
+!.env.example
+.streamlit/secrets.toml
+# Temporary uploads / user-specific data
+uploads/
+user_data/
+tmp/
+temp/
+*.cache
+.cache/
+.pytest_cache/
+# Generated exports (the committed project reports in outputs/ are kept)
+exports/

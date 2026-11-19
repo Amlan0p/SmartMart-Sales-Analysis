@@ -1,0 +1,28 @@
+{
+  "name": "SmartMart Cronus Theme",
+  "dataColors": ["#3669AB", "#69A147", "#1B3A5C", "#8CC063", "#6D9BD1", "#E0A030", "#8795A8", "#B5D5A0"],
+  "background": "#FFFFFF",
+  "foreground": "#1B3A5C",
+  "tableAccent": "#3669AB",
+  "good": "#69A147",
+  "neutral": "#E0A030",
+  "bad": "#C0504D",
+  "maximum": "#3669AB",
+  "center": "#E8EEF5",
+  "minimum": "#B5D5A0",
+  "textClasses": {
+    "title":   { "fontFace": "Segoe UI Semibold", "fontSize": 14, "color": "#1B3A5C" },
+    "label":   { "fontFace": "Segoe UI", "fontSize": 10, "color": "#3C4858" },
+    "callout": { "fontFace": "Segoe UI Semibold", "fontSize": 24, "color": "#3669AB" },
+    "header":  { "fontFace": "Segoe UI Semibold", "fontSize": 11, "color": "#1B3A5C" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [{ "show": true, "fontColor": { "solid": { "color": "#1B3A5C" } }, "fontSize": 13 }],
+        "background": [{ "show": true, "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#D9E2EC" } }, "radius": 6 }]
+      }
+    }
+  }
+}

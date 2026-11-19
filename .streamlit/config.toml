@@ -1,0 +1,10 @@
+# Light theme by default for the SmartMart Streamlit frontend.
+[theme]
+base = "light"
+primaryColor = "#3669AB"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F7FB"
+textColor = "#1B3A5C"
+
+[browser]
+gatherUsageStats = false

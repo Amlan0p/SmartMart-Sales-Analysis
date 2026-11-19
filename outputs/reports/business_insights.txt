@@ -1,0 +1,40 @@
+======================================================================
+SMARTMART SALES PERFORMANCE ANALYTICS
+SmartMart E-Commerce - BUSINESS INSIGHTS REPORT
+======================================================================
+
+This report is generated automatically from the cleaned sales
+dataset. All figures below are calculated directly from the data,
+not manually entered.
+
+----------------------------------------------------------------------
+KEY FINDINGS (Descriptive)
+----------------------------------------------------------------------
+1. Total revenue across the analyzed period was ₹189,024,945.86 from 14,970 orders placed by 2,953 customers.
+2. The average order value was ₹12,626.92, with an average selling price of ₹6,247.52 per unit.
+3. The highest-revenue product was 'Laptop' in the Electronics category, generating ₹44,345,930.75.
+4. The lowest-performing product by revenue was 'Biscuits (Pack)' (₹43,850.09).
+5. The highest-revenue category was Electronics, contributing ₹71,223,416.54 (37.7% of total revenue).
+6. The lowest-revenue category was Grocery, contributing ₹1,088,382.09.
+7. The highest-revenue region was East, generating ₹39,657,536.84.
+8. The lowest-revenue region was West, generating ₹36,133,852.44.
+9. The peak sales month was November 2023, while the lowest sales month was February 2023, indicating a seasonal pattern in demand.
+10. Out of 2,953 customers, 2,435 (82.5%) placed more than one order and are classified as repeat customers, while 518 made only a single purchase.
+11. The highest-spending customer was 'CUST01384', with total spending of ₹1,257,221.40 across 22 order(s).
+12. The most-used payment method was UPI, accounting for 37.5% of orders and 37.9% of revenue.
+13. Revenue is concentrated: 28.6% of products (10 of 35) account for approximately 80% of total revenue.
+14. Year-over-year revenue grew by 5.1% in 2024 compared to the prior year.
+15. Among customer segments, 'High Value' generated the highest total revenue (₹103,683,919.33) across 574 customer(s).
+
+----------------------------------------------------------------------
+BUSINESS RECOMMENDATIONS (Actionable)
+----------------------------------------------------------------------
+1. Since Electronics is the leading revenue-generating category, maintain strong inventory availability and prioritize supplier reliability for products in this category.
+2. Products with comparatively low total revenue, such as Biscuits (Pack), Tea (250g), Cooking Oil (1L), could be reviewed by management for pricing, promotional support, or product positioning, as they may be underperforming relative to their category peers.
+3. The West region generates comparatively lower revenue than East; consider investigating regional demand drivers and evaluating targeted marketing or promotional campaigns in this region.
+4. The repeat-customer rate of 82.5% indicates healthy customer retention; continued investment in loyalty and engagement programs is recommended to sustain this trend.
+5. Net Banking is the least-used payment method (10.0% of orders). If this method carries lower transaction fees or faster settlement, consider incentivizing its adoption; otherwise, evaluate whether it should continue to be supported.
+
+======================================================================
+END OF REPORT
+======================================================================

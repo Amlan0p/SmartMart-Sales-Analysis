@@ -1,0 +1,36 @@
+Product,Category,Revenue_Rank,ABC_Class,Cumulative_Revenue_Percent
+Laptop,Electronics,1,A,23.46
+Sofa,Furniture,2,A,39.33
+Dining Table,Furniture,3,A,49.17
+Smartphone,Electronics,4,A,57.52
+Microwave Oven,Home Appliances,5,A,63.17
+Air Cooler,Home Appliances,6,A,68.02
+Office Chair,Furniture,7,A,72.26
+Vacuum Cleaner,Home Appliances,8,A,76.15
+Study Table,Furniture,9,A,79.25
+Smartwatch,Electronics,10,B,81.66
+Bookshelf,Furniture,11,B,83.92
+Mixer Grinder,Home Appliances,12,B,85.9
+Jacket,Clothing,13,B,87.42
+Saree,Clothing,14,B,88.87
+Shoes,Clothing,15,B,90.15
+Backpack,Accessories,16,B,91.28
+Bluetooth Speaker,Electronics,17,B,92.36
+Sunglasses,Accessories,18,B,93.37
+Wireless Headphones,Electronics,19,B,94.19
+Jeans,Clothing,20,B,95.0
+Electric Kettle,Home Appliances,21,C,95.76
+Power Bank,Electronics,22,C,96.45
+Kurta,Clothing,23,C,97.08
+Keyboard,Electronics,24,C,97.63
+Wallet,Accessories,25,C,98.18
+Belt,Accessories,26,C,98.54
+Mouse,Electronics,27,C,98.86
+T-Shirt,Clothing,28,C,99.17
+Mobile Cover,Accessories,29,C,99.42
+Rice (5kg),Grocery,30,C,99.62
+Coffee (200g),Grocery,31,C,99.73
+Spices Combo,Grocery,32,C,99.83
+Cooking Oil (1L),Grocery,33,C,99.91
+Tea (250g),Grocery,34,C,99.98
+Biscuits (Pack),Grocery,35,C,100.0

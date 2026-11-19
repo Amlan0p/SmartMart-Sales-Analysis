@@ -1,0 +1,31 @@
+// ---------------------------------------------------------------------------
+// Calculated table: Dim_Date
+// Create via: Table view / Modeling > New table, then paste the block below.
+// Then:  Table tools > Mark as date table > Date column = Dim_Date[Date]
+// Covers full calendar years so time intelligence (SAMEPERIODLASTYEAR,
+// DATEADD, TOTALYTD) has a contiguous, gap-free date column.
+// ---------------------------------------------------------------------------
+Dim_Date =
+VAR _FirstYear = YEAR ( MIN ( Fact_Sales[Order_Date] ) )
+VAR _LastYear  = YEAR ( MAX ( Fact_Sales[Order_Date] ) )
+RETURN
+    ADDCOLUMNS (
+        CALENDAR ( DATE ( _FirstYear, 1, 1 ), DATE ( _LastYear, 12, 31 ) ),
+        "Year", YEAR ( [Date] ),
+        "Quarter Number", QUARTER ( [Date] ),
+        "Quarter", "Q" & QUARTER ( [Date] ),
+        "Month Number", MONTH ( [Date] ),
+        "Month Name", FORMAT ( [Date], "mmmm" ),
+        "Month Short", FORMAT ( [Date], "mmm" ),
+        "Year-Month", FORMAT ( [Date], "yyyy-mm" ),
+        "Month Start", DATE ( YEAR ( [Date] ), MONTH ( [Date] ), 1 ),
+        "Day of Week Number", WEEKDAY ( [Date], 2 ),
+        "Day of Week", FORMAT ( [Date], "dddd" )
+    )
+
+// Column settings applied afterwards in the Power BI UI (see BUILD_GUIDE):
+//   Dim_Date[Month Name]  -> Column tools > Sort by column > Month Number
+//   Dim_Date[Month Short] -> Sort by column > Month Number
+//   Dim_Date[Day of Week] -> Sort by column > Day of Week Number
+//   Dim_Date[Quarter]     -> Sort by column > Quarter Number
+//   Create hierarchy "Date Hierarchy": Year > Quarter > Month Name

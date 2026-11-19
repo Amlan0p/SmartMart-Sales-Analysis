@@ -1,0 +1,261 @@
+// ===========================================================================
+// SmartMart Sales Performance Analytics - DAX measures
+// Model tables : Fact_Sales, Dim_Date, Dim_Customer, Dim_Product
+// How to use   : Create a measure table (Home > Enter data > name it
+//                "_Measures", load it), then for EACH block below choose
+//                Modeling > New measure and paste the block (name included).
+// Convention   : every measure starts at column 0 as   Name =
+//                Continuation lines are indented. "// Folder:" comments give
+//                the Display Folder to assign in the Properties pane.
+// Grain note   : Order_ID is unique per row in the cleaned data, so
+//                DISTINCTCOUNT(Order_ID) = row count today. DISTINCTCOUNT is
+//                still used so the model stays correct if multi-line orders
+//                are ever introduced.
+// Python parity: definitions mirror src/analysis.py (see reconciliation
+//                report in powerbi/verification/).
+// ===========================================================================
+
+
+// ---------------------------------------------------------------------------
+// 1. CORE KPIs                                              Folder: 1 Core KPIs
+// ---------------------------------------------------------------------------
+Total Revenue =
+    SUM ( Fact_Sales[Sales] )
+
+Total Orders =
+    DISTINCTCOUNT ( Fact_Sales[Order_ID] )
+
+Total Customers =
+    DISTINCTCOUNT ( Fact_Sales[Customer_ID] )
+
+Total Units Sold =
+    SUM ( Fact_Sales[Quantity] )
+
+Average Order Value =
+    DIVIDE ( [Total Revenue], [Total Orders] )
+
+Average Selling Price =
+    DIVIDE ( [Total Revenue], [Total Units Sold] )
+
+Average Revenue per Customer =
+    DIVIDE ( [Total Revenue], [Total Customers] )
+
+Orders per Customer =
+    DIVIDE ( [Total Orders], [Total Customers] )
+
+Products Sold =
+    DISTINCTCOUNT ( Fact_Sales[Product] )
+
+Last Order Date =
+    MAX ( Fact_Sales[Order_Date] )
+
+
+// ---------------------------------------------------------------------------
+// 2. TIME INTELLIGENCE                                      Folder: 2 Time
+// ---------------------------------------------------------------------------
+Revenue Previous Month =
+    CALCULATE ( [Total Revenue], DATEADD ( Dim_Date[Date], -1, MONTH ) )
+
+Revenue Growth % =
+    // Month-over-month growth. Use on a visual with Month on the axis.
+    DIVIDE ( [Total Revenue] - [Revenue Previous Month], [Revenue Previous Month] )
+
+Revenue Previous Year =
+    CALCULATE ( [Total Revenue], SAMEPERIODLASTYEAR ( Dim_Date[Date] ) )
+
+YoY Revenue Growth % =
+    // Context-sensitive. Shows a value when the visual has Year/Month on the
+    // axis (e.g. 2024 vs 2023). BLANK when no prior-year data is in scope.
+    DIVIDE ( [Total Revenue] - [Revenue Previous Year], [Revenue Previous Year] )
+
+Latest Year YoY Growth % =
+    // Card-friendly. Compares the latest year in the date slicer selection
+    // with the year before it (all months), ignoring the date slicer.
+    // Mirrors Python year_over_year_analysis (2024 vs 2023).
+    VAR _LatestYear = MAX ( Dim_Date[Year] )
+    VAR _CurrentYearRevenue =
+        CALCULATE ( [Total Revenue], REMOVEFILTERS ( Dim_Date ), Dim_Date[Year] = _LatestYear )
+    VAR _PreviousYearRevenue =
+        CALCULATE ( [Total Revenue], REMOVEFILTERS ( Dim_Date ), Dim_Date[Year] = _LatestYear - 1 )
+    RETURN
+        DIVIDE ( _CurrentYearRevenue - _PreviousYearRevenue, _PreviousYearRevenue )
+
+Revenue YTD =
+    TOTALYTD ( [Total Revenue], Dim_Date[Date] )
+
+Peak Revenue Month =
+    VAR _Months =
+        FILTER ( ALLSELECTED ( Dim_Date[Year-Month] ), [Total Revenue] > 0 )
+    RETURN
+        CONCATENATEX ( TOPN ( 1, _Months, [Total Revenue], DESC ), Dim_Date[Year-Month], ", " )
+
+Lowest Revenue Month =
+    VAR _Months =
+        FILTER ( ALLSELECTED ( Dim_Date[Year-Month] ), [Total Revenue] > 0 )
+    RETURN
+        CONCATENATEX ( TOPN ( 1, _Months, [Total Revenue], ASC ), Dim_Date[Year-Month], ", " )
+
+
+// ---------------------------------------------------------------------------
+// 3. PRODUCT & CATEGORY                                     Folder: 3 Product
+// ---------------------------------------------------------------------------
+Category Revenue Contribution % =
+    DIVIDE (
+        [Total Revenue],
+        CALCULATE ( [Total Revenue], ALLSELECTED ( Dim_Product[Category] ) )
+    )
+
+Product Contribution % =
+    DIVIDE (
+        [Total Revenue],
+        CALCULATE ( [Total Revenue], ALLSELECTED ( Dim_Product[Product] ) )
+    )
+
+Product Revenue Rank =
+    RANKX ( ALLSELECTED ( Dim_Product[Product] ), [Total Revenue], , DESC, Dense )
+
+Top Product =
+    CONCATENATEX (
+        TOPN ( 1, ALLSELECTED ( Dim_Product[Product] ), [Total Revenue], DESC ),
+        Dim_Product[Product], ", "
+    )
+
+Lowest Product =
+    VAR _Sold = FILTER ( ALLSELECTED ( Dim_Product[Product] ), [Total Revenue] > 0 )
+    RETURN
+        CONCATENATEX ( TOPN ( 1, _Sold, [Total Revenue], ASC ), Dim_Product[Product], ", " )
+
+ABC A Threshold =
+    0.80
+
+ABC B Threshold =
+    0.95
+
+Cumulative Revenue % =
+    // Pareto line. Products ranked by revenue (highest first); cumulative share
+    // of the revenue of the products currently selected by the slicers.
+    VAR _CurrentRevenue = [Total Revenue]
+    VAR _CumulativeRevenue =
+        CALCULATE (
+            [Total Revenue],
+            FILTER ( ALLSELECTED ( Dim_Product[Product] ), [Total Revenue] >= _CurrentRevenue )
+        )
+    VAR _GrandTotal =
+        CALCULATE ( [Total Revenue], ALLSELECTED ( Dim_Product[Product] ) )
+    RETURN
+        IF ( ISBLANK ( _CurrentRevenue ), BLANK (), DIVIDE ( _CumulativeRevenue, _GrandTotal ) )
+
+ABC Class (Dynamic) =
+    // Same rule as Python config.py: A while cumulative share <= 80 %,
+    // B while <= 95 %, otherwise C. Recalculates with the slicers.
+    // ROUND(..., 4) on the fraction = 2 decimal places on the percentage, which
+    // is exactly what src/analysis.py pareto_analysis() does before comparing
+    // with the thresholds. Without it Jeans (95.004 %) would be class C in
+    // Power BI but class B in Python. See reconciliation report.
+    VAR _Cumulative = ROUND ( [Cumulative Revenue %], 4 )
+    RETURN
+        IF (
+            ISBLANK ( _Cumulative ), BLANK (),
+            IF ( _Cumulative <= [ABC A Threshold], "A",
+                IF ( _Cumulative <= [ABC B Threshold], "B", "C" ) )
+        )
+
+
+// ---------------------------------------------------------------------------
+// 4. REGIONAL                                               Folder: 4 Region
+// ---------------------------------------------------------------------------
+Regional Revenue =
+    // Use with Region or City on the axis.
+    [Total Revenue]
+
+Regional Revenue Contribution % =
+    DIVIDE (
+        [Total Revenue],
+        CALCULATE ( [Total Revenue], ALLSELECTED ( Fact_Sales[Region] ) )
+    )
+
+Regional Revenue Rank =
+    RANKX ( ALLSELECTED ( Fact_Sales[Region] ), [Total Revenue], , DESC, Dense )
+
+Highest Performing Region =
+    CONCATENATEX (
+        TOPN ( 1, ALLSELECTED ( Fact_Sales[Region] ), [Total Revenue], DESC ),
+        Fact_Sales[Region], ", "
+    )
+
+Lowest Performing Region =
+    VAR _Active = FILTER ( ALLSELECTED ( Fact_Sales[Region] ), [Total Revenue] > 0 )
+    RETURN
+        CONCATENATEX ( TOPN ( 1, _Active, [Total Revenue], ASC ), Fact_Sales[Region], ", " )
+
+Highest Region Revenue =
+    MAXX ( ALLSELECTED ( Fact_Sales[Region] ), [Total Revenue] )
+
+Lowest Region Revenue =
+    MINX ( FILTER ( ALLSELECTED ( Fact_Sales[Region] ), [Total Revenue] > 0 ), [Total Revenue] )
+
+Revenue vs Regional Average % =
+    VAR _Average = AVERAGEX ( ALLSELECTED ( Fact_Sales[Region] ), [Total Revenue] )
+    RETURN
+        DIVIDE ( [Total Revenue] - _Average, _Average )
+
+
+// ---------------------------------------------------------------------------
+// 5. CUSTOMER                                               Folder: 5 Customer
+// ---------------------------------------------------------------------------
+Customer Revenue =
+    // Use with Customer_ID, Segment or Customer_Type on the axis.
+    [Total Revenue]
+
+Customer Contribution % =
+    DIVIDE (
+        [Total Revenue],
+        CALCULATE ( [Total Revenue], ALLSELECTED ( Fact_Sales[Customer_ID] ) )
+    )
+
+Repeat Min Orders =
+    // Mirrors REPEAT_CUSTOMER_MIN_ORDERS in config.py.
+    2
+
+Repeat Customers =
+    // Context-sensitive: customers with at least 2 distinct orders INSIDE the
+    // current filters (e.g. the selected date range). Counts each customer once.
+    VAR _MinOrders = [Repeat Min Orders]
+    RETURN
+        SUMX (
+            VALUES ( Fact_Sales[Customer_ID] ),
+            IF ( CALCULATE ( DISTINCTCOUNT ( Fact_Sales[Order_ID] ) ) >= _MinOrders, 1, 0 )
+        )
+
+One-time Customers =
+    [Total Customers] - [Repeat Customers]
+
+Repeat Customer Rate % =
+    DIVIDE ( [Repeat Customers], [Total Customers] )
+
+Repeat Customers (Lifetime Flag) =
+    // Uses the whole-period order count exported by Python (Dim_Customer
+    // [Frequency]), i.e. the SAME definition as Python customer_analysis().
+    CALCULATE ( DISTINCTCOUNT ( Fact_Sales[Customer_ID] ), Dim_Customer[Frequency] >= [Repeat Min Orders] )
+
+One-time Customers (Lifetime Flag) =
+    CALCULATE ( DISTINCTCOUNT ( Fact_Sales[Customer_ID] ), Dim_Customer[Frequency] < [Repeat Min Orders] )
+
+Repeat Customer Rate % (Lifetime Flag) =
+    DIVIDE ( [Repeat Customers (Lifetime Flag)], [Total Customers] )
+
+
+// ---------------------------------------------------------------------------
+// 6. PAYMENT                                                Folder: 6 Payment
+// ---------------------------------------------------------------------------
+Payment Revenue Share % =
+    DIVIDE (
+        [Total Revenue],
+        CALCULATE ( [Total Revenue], ALLSELECTED ( Fact_Sales[Payment_Mode] ) )
+    )
+
+Payment Order Share % =
+    DIVIDE (
+        [Total Orders],
+        CALCULATE ( [Total Orders], ALLSELECTED ( Fact_Sales[Payment_Mode] ) )
+    )

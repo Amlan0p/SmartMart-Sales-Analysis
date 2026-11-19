@@ -1,0 +1,8 @@
+== validate_powerbi_assets.py ==
+Static checks passed: 366
+All static checks passed. (Static only - formulas not executed in Power BI.)
+exit code: 0
+
+== reconcile_python_vs_dax.py ==
+Checks run: 109 | matched: 106 | mismatched: 3 (0 unexplained, 3 expected-by-design)
+exit code: 0
