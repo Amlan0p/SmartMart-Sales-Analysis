@@ -9,7 +9,7 @@
 ---
 
 <p align="center">
-  <a href="https://healthcare-app-7viu.onrender.com/">
+  <a href="https://smartmart.streamlit.app/">
     <img src="https://img.shields.io/badge/LIVE_DEMO-Visit_Health--Care-38bdf8?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo">
   </a>
 </p>
