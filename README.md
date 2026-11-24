@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smartmart.streamlit.app/">
-    <img src="https://img.shields.io/badge/LIVE_DEMO-Visit_Health--Care-38bdf8?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo">
+    <img src="https://img.shields.io/badge/LIVE_DEMO-Visit_SmartMart--Sales--Analysis-38bdf8?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo">
   </a>
 </p>
 
