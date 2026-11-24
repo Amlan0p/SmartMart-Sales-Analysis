@@ -6,6 +6,16 @@
 >
 > **Power BI status.** The four-page report is included as [`powerbi/SmartMart_Sales_Dashboard_Final.pbix`](powerbi/SmartMart_Sales_Dashboard_Final.pbix) with four real screenshots in [`powerbi/screenshots/`](powerbi/screenshots). Every number legible in the screenshots matches the Python results. The dashboard implements only part of the original specification (for example no Top N filters, no Pareto cumulative line, no customer-segmentation chart, and the monthly trend axis is sorted by value rather than by date), and the independent audit could not inspect the compressed model inside the `.pbix`. Details: report Section 21.3 in [`documentation/SmartMart_Final_Report.pdf`](documentation/SmartMart_Final_Report.pdf).
 
+---
+
+<p align="center">
+  <a href="https://healthcare-app-7viu.onrender.com/">
+    <img src="https://img.shields.io/badge/LIVE_DEMO-Visit_Health--Care-38bdf8?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo">
+  </a>
+</p>
+
+---
+
 ## Contents
 [Overview](#overview) · [Business problem](#business-problem) · [Objectives](#objectives) · [Features](#key-features) · [Technology](#technology-stack) · [Architecture](#architecture) · [Structure](#project-structure) · [Dataset](#dataset) · [Install](#installation) · [Run](#running-the-python-pipeline) · [Tests](#testing) · [Power BI](#power-bi-setup) · [Screenshots](#dashboard-screenshots) · [Docs](#documentation) · [Results](#results-and-key-findings) · [Limitations](#limitations) · [Future scope](#future-scope) · [Team](#team)
 
